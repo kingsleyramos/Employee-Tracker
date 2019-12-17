@@ -13,7 +13,7 @@ CREATE TABLE employee (
     PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES role(id),
     FOREIGN KEY (manager_id) REFERENCES employee(id),
-)
+);
 
 
 CREATE TABLE role (
@@ -23,10 +23,10 @@ CREATE TABLE role (
     department_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (department_id) REFERENCES department(id)
-)
+);
 
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
-)
+);
