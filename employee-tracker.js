@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
-const util = require("util");
+//const util = require("util");
 const promisemysql = require("promise-mysql");
 
 // Create properties for DB connection
@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
 
 
 // Create Connection
-connection.connect(function(err) {
+connection.connect((err) => {
     if (err) throw err;
     mainMenu();
 });
@@ -36,7 +36,7 @@ function mainMenu(){
         "Update employee role"
       ]
     })
-    .then(function(answer) {
+    .then((answer) => {
         switch (answer.action) {
             case "View all employees":
                 viewAllEmp();
@@ -69,7 +69,7 @@ function mainMenu(){
 
 function viewAllEmp(){
 
-    let query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id";
+    let query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
     connection.query(query, function(err, res) {
         if(err) return err;
         console.log("\n");
@@ -89,7 +89,7 @@ function viewAllEmpByDept(){
         user: "root",
         password: "",
         database: "employees_DB"
-    }).then(function(conn){
+    }).then((conn) => {
         //let deptConnection = conn;
         return conn.query('SELECT name FROM department');
     }).then(function(value){
@@ -97,20 +97,20 @@ function viewAllEmpByDept(){
             depArr.push(value[i].name);
             //console.log(value[i].name);
         }
-    }).then(function(){
+    }).then(() => {
         inquirer.prompt({
             name: "department",
             type: "list",
             message: "What department would you like to search?",
             choices: depArr
         })    
-        .then(function(answer) {
+        .then((answer) => {
 
-            let query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}'`;
+            let query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
 
             //console.log(query);
     
-            connection.query(query, function(err, res) {
+            connection.query(query, (err, res) => {
                 if(err) return err;
                 //console.log("query Connection");
                 console.log("\n");
@@ -174,10 +174,60 @@ function viewAllEmpByDept(){
     //mainMenu();
 }
 
+function viewAllEmpByRole(){
+
+    let roleArr = [];
+
+    promisemysql.createConnection({
+        host: "localhost",
+        port: 3306,
+        user: "root",
+        password: "",
+        database: "employees_DB"
+    }).then((conn) => {
+        //let deptConnection = conn;
+        return conn.query('SELECT title FROM role');
+    }).then(function(value){
+        for (i=0; i < value.length; i++){
+            roleArr.push(value[i].title);
+            //console.log(value[i].name);
+        }
+    }).then(() => {
+        inquirer.prompt({
+            name: "role",
+            type: "list",
+            message: "What role would you like to search?",
+            choices: roleArr
+        })    
+        .then((answer) => {
+
+            let query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE role.title = '${answer.role}' ORDER BY ID ASC`;
+
+            //console.log(query);
+    
+            connection.query(query, (err, res) => {
+                if(err) return err;
+                //console.log("query Connection");
+                console.log("\n");
+                console.table(res);
+                mainMenu();
+            });
+        });
+    });
+}
+
 function addEmp(){
 
 }
 
 function addDept(){
+    
+}
+
+function addRole(){
+
+}
+
+function updateEmpRole(){
     
 }
