@@ -404,7 +404,7 @@ function updateEmpRole(){
             
                 connection.query(`UPDATE employee SET role_id = ${roleID} WHERE id = ${employeeID}`, (err, res) => {
                     if(err) return err;
-                    console.log("\n EMPLOYEE'S ROLE UPDATED...\n ");
+                    console.log(`\n ${answer.employee} ROLE UPDATED TO ${answer.role}...\n `);
                     mainMenu();
                 });
             });
@@ -459,7 +459,7 @@ function updateEmpMngr(){
             
                 connection.query(`UPDATE employee SET manager_id = ${managerID} WHERE id = ${employeeID}`, (err, res) => {
                     if(err) return err;
-                    console.log("\n EMPLOYEE'S MANAGER UPDATED...\n ");
+                    console.log(`\n ${answer.employee} MANAGER UPDATED TO ${answer.manager}...\n`);
                     mainMenu();
                 });
             });
@@ -604,9 +604,7 @@ function deleteRole(){
                 message: "Type the role title EXACTLY to confirm deletion of the role"
 
             }]).then((answer) => {
-
                 
-
                 if(answer.confirmDelete === answer.role){
 
                     let roleID;
