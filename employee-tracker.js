@@ -21,6 +21,8 @@ connection.connect((err) => {
     if (err) throw err;
 
     // Start main menu function
+
+    console.log("\n WELCOME TO EMPLOYEE TRACKER \n");
     mainMenu();
 });
 
